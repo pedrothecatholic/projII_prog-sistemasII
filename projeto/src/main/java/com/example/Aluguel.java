@@ -4,6 +4,7 @@ import java.sql.Date;
 import javax.persistence.*;
 
 @Entity
+@Table(name="alugueis")
 public class Aluguel {
 
     @Id

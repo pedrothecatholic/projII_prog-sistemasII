@@ -8,6 +8,7 @@ import org.springframework.web.server.*;
 
 
 @RestController
+@RequestMapping("/imoveis")
 public class ImovelController {
 
     @Autowired
@@ -15,7 +16,6 @@ public class ImovelController {
 
     public ImovelController(){}
 
-    @RequestMapping("/imoveis")
     @GetMapping
     Iterable<Imovel> getImoveis(){
         return imovelRepository.findAll();
@@ -26,9 +26,9 @@ public class ImovelController {
         return imovelRepository.findById(id);
     }
 
-    @GetMapping("/{endereço}")
-    Optional<Imovel> getImovel(@PathVariable String endereço){
-        return imovelRepository.findByEndereço(endereço);
+    @GetMapping("/{endereco}")
+    Optional<Imovel> getImovel(@PathVariable String endereco){
+        return imovelRepository.findByEndereco(endereco);
     }
 
     @PostMapping

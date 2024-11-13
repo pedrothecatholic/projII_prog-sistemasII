@@ -2,6 +2,7 @@ package com.example;
 import javax.persistence.*;
 
 @Entity
+@Table(name="imoveis")
 public class Imovel {
 
     @Id
