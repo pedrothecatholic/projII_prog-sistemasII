@@ -1,3 +1,4 @@
+package com.example;
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,15 +15,12 @@ public class Inquilino {
     @OneToMany(mappedBy = "inquilino", cascade = CascadeType.ALL)
     private List<Aluguel> alugueis;
 
-    // Construtor padrão
     public Inquilino() {}
 
-    // Construtor com parâmetros
     public Inquilino(String nome, String senha) {
         this.nome = nome;
         this.senha = senha;
     }
-
     
     public Long getId() {
         return id;

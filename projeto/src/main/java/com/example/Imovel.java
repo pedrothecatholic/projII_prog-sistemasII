@@ -1,3 +1,4 @@
+package com.example;
 import javax.persistence.*;
 
 @Entity
@@ -8,7 +9,7 @@ public class Imovel {
     private Long id;
 
     private String endereco;
-    private String tipo;  // Ex: "Casa", "Apartamento"
+    private String tipo; 
     private double areaUtil;
     private int quartos;
     private double precoAluguel;
@@ -17,7 +18,6 @@ public class Imovel {
   
     public Imovel() {}
 
-    // Construtor com parâmetros
     public Imovel(String endereco, String tipo, double areaUtil, int quartos, double precoAluguel, boolean disponibilidade) {
         this.endereco = endereco;
         this.tipo = tipo;
@@ -72,7 +72,7 @@ public class Imovel {
         this.precoAluguel = precoAluguel;
     }
 
-    public boolean isDisponibilidade() {
+    public boolean getDisponibilidade() {
         return disponibilidade;
     }
 
