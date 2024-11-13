@@ -1,5 +1,5 @@
 package com.example;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -12,11 +12,11 @@ public class Aluguel {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "imovel_id")
+    @JoinColumn(name = "imovel_id", nullable = false)
     private Imovel imovel;
 
     @ManyToOne
-    @JoinColumn(name = "inquilino_id")
+    @JoinColumn(name = "inquilino_id", nullable = false)
     private Inquilino inquilino;
 
     private Date data_inicio;

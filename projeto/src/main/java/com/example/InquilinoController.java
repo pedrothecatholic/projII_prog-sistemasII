@@ -16,7 +16,7 @@ public class InquilinoController {
     public InquilinoController(){}
 
     @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarInquilino(@RequestBody Inquilino inquilino) {
+    ResponseEntity<String> cadastrarInquilino(@RequestBody Inquilino inquilino) {
         Optional<Inquilino> inquilinoExistente = inquilinoRepository.findByNome(inquilino.getNome());
         
         if (inquilinoExistente.isPresent()) {
@@ -28,14 +28,14 @@ public class InquilinoController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Inquilino login) {
+    ResponseEntity<String> login(@RequestBody Inquilino login) {
         if (autenticar(login.getNome(), login.getSenha())) {
             return ResponseEntity.ok("Login bem-sucedido");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha incorretos");
     }
 
-    public boolean autenticar(String nome, String senha) {
+    boolean autenticar(String nome, String senha) {
         Inquilino inquilino = inquilinoRepository.findByNome(nome)
                 .orElse(null);
         
@@ -46,6 +46,31 @@ public class InquilinoController {
         return false;
     }
 
+    @GetMapping
+    Iterable<Inquilino> getInquilinos(){
+        return inquilinoRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    Optional<Inquilino> getInquilino(@PathVariable Long id){
+        return inquilinoRepository.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    Optional<Inquilino> atualizarInquilino(@PathVariable Long id, @RequestBody Inquilino inquilinoRequest) {
+        Optional<Inquilino> opt = this.getInquilino(id);
+        if (opt.isPresent()) {
+            Inquilino inquilino = opt.get();
+            if (inquilinoRequest.getId() == inquilino.getId()) {
+                inquilino.setNome(inquilinoRequest.getNome());
+                inquilino.setSenha(inquilinoRequest.getSenha());
+                inquilinoRequest.save(inquilino);
+                return opt;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+        "Erro ao alterar dados do inquilino com id " + id);
+    }
 
     @DeleteMapping("/{id}")
     void excluirInquilino(@PathVariable Long id) {

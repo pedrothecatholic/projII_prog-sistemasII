@@ -21,12 +21,12 @@ public class ImovelController {
         return imovelRepository.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     Optional<Imovel> getImovel(@PathVariable Long id){
         return imovelRepository.findById(id);
     }
 
-    @GetMapping("/{endereco}")
+    @GetMapping("/endereco/{endereco}")
     Optional<Imovel> getImovel(@PathVariable String endereco){
         return imovelRepository.findByEndereco(endereco);
     }
@@ -36,7 +36,7 @@ public class ImovelController {
         return imovelRepository.save(imovel);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     Optional<Imovel> atualizarImovel(@PathVariable Long id, @RequestBody Imovel imovelRequest) {
         Optional<Imovel> opt = this.getImovel(id);
         if (opt.isPresent()) {
@@ -56,7 +56,7 @@ public class ImovelController {
         "Erro ao alterar dados do imóvel com id " + id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     void excluirImovel(@PathVariable Long id) {
         imovelRepository.deleteById(id);
     }
