@@ -17,44 +17,65 @@ public class ImovelController {
     public ImovelController(){}
 
     @GetMapping
-    Iterable<Imovel> getImoveis(){
-        return imovelRepository.findAll();
+    Iterable<Imovel> getImoveis() {
+        try {
+            return imovelRepository.findAll();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar imóveis.", e);
+        }
     }
 
     @GetMapping("/id/{id}")
-    Optional<Imovel> getImovel(@PathVariable Long id){
-        return imovelRepository.findById(id);
+    Optional<Imovel> getImovel(@PathVariable Long id) {
+        try {
+            Optional<Imovel> imovel = imovelRepository.findById(id);
+            if (imovel.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Imóvel não encontrado com ID " + id);
+            }
+            return imovel;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar imóvel com ID " + id, e);
+        }
     }
 
     @GetMapping("/endereco/{endereco}")
-    Optional<Imovel> getImovel(@PathVariable String endereco){
-        return imovelRepository.findByEndereco(endereco);
-    }
-
-    @PostMapping
-    Imovel cadastrarImovel(@RequestBody Imovel imovel) {
+    Optional<Imovel> getImovelByEndereco(@PathVariable String endereco) {
         try {
-            return imovelRepository.save(imovel);
+            Optional<Imovel> imovel = imovelRepository.findByEndereco(endereco);
+            if (imovel.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Imóvel não encontrado com endereço " + endereco);
+            }
+            return imovel;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao cadastrar imóvel ", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar imóvel por endereço.", e);
         }
     }
 
 
+    @PostMapping
+    ResponseEntity<String> cadastrarImovel(@RequestBody Imovel imovel) {
+        try {
+            imovelRepository.save(imovel);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Imóvel cadastrado com sucesso.");
+        } catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao cadastrar imóvel.", e);
+        }
+    }
+
     @PutMapping("/id/{id}")
-    Optional<Imovel> atualizarImovel(@PathVariable Long id, @RequestBody Imovel imovelRequest) {
-        Optional<Imovel> opt = this.getImovel(id);
-
-        if (opt.isPresent()) {
-            Imovel imovel = opt.get();
-
-            if (imovelRequest.getId() == imovel.getId()) {
+    ResponseEntity<String> atualizarImovel(@PathVariable Long id, @RequestBody Imovel imovelRequest) {
+        try {
+            Optional<Imovel> opt = this.getImovel(id);
+            if (opt.isPresent()) {
+                Imovel imovel = opt.get();
                 imovel.setEndereco(imovelRequest.getEndereco());
                 imovel.setAreaUtil(imovelRequest.getAreaUtil());
                 imovel.setDisponibilidade(imovelRequest.getDisponibilidade());
                 imovel.setPrecoAluguel(imovelRequest.getPrecoAluguel());
                 imovel.setQuartos(imovelRequest.getQuartos());
-    
+
                 if (imovel instanceof Casa && imovelRequest instanceof Casa) {
                     Casa casa = (Casa) imovel;
                     Casa casaRequest = (Casa) imovelRequest;
@@ -66,16 +87,31 @@ public class ImovelController {
                     apartamento.setAndar(apartamentoRequest.getAndar());
                     apartamento.setCondominio(apartamentoRequest.getCondominio());
                 }
-    
+
                 imovelRepository.save(imovel);
-                return opt; 
+                return ResponseEntity.ok("Imóvel atualizado com sucesso.");
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Imóvel não encontrado com ID " + id);
             }
+        } catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao atualizar imóvel.", e);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado.");
     }
 
     @DeleteMapping("/id/{id}")
-    void excluirImovel(@PathVariable Long id) {
-        imovelRepository.deleteById(id);
+    ResponseEntity<String> excluirImovel(@PathVariable Long id) {
+        try {
+            Optional<Imovel> imovelExistente = this.getImovel(id);
+            if (imovelExistente.isPresent()) {
+                imovelRepository.deleteById(id);
+                return ResponseEntity.ok("Imóvel excluído com sucesso.");
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Imóvel não encontrado com ID " + id);
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao excluir imóvel.", e);
+        }
     }
 }
