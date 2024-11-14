@@ -1,5 +1,5 @@
 //Matheus Tramont Hoffmann
-//Paulo Texeira Costa
+//Paulo Teixeira Costa
 //Ana Carolina Carvalho
 //Pedro Henrique de Sousa
 
