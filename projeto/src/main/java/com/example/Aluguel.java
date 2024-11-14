@@ -3,6 +3,9 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="alugueis")
 public class Aluguel {
@@ -19,7 +22,12 @@ public class Aluguel {
     @JoinColumn(name = "inquilino_id", nullable = false)
     private Inquilino inquilino;
 
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date data_inicio;
+
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date data_fim;
 
     public Aluguel() {}
@@ -50,6 +58,7 @@ public class Aluguel {
         this.inquilino = inquilino;
     }
 
+    @JsonProperty("data_inicio")
     public Date getDataInicio (){
         return data_inicio;
     }
@@ -58,6 +67,7 @@ public class Aluguel {
         this.data_inicio = data_inicio;
     }
 
+    @JsonProperty("data_fim")
     public Date getDataFim(){
         return data_fim;
     }

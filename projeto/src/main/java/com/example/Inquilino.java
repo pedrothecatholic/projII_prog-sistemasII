@@ -1,5 +1,8 @@
 package com.example;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.List;
 
 @Entity
@@ -14,6 +17,7 @@ public class Inquilino {
     private String senha;
 
     @OneToMany(mappedBy = "inquilino", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Aluguel> alugueis;
 
     public Inquilino() {}

@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AluguelController {
     @Autowired
     private AluguelRepository aluguelRepository;
+
+    @Autowired
     private ImovelRepository imovelRepository;
+
+    @Autowired
     private InquilinoRepository inquilinoRepository;
 
     public AluguelController(){}
