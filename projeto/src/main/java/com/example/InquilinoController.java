@@ -64,7 +64,7 @@ public class InquilinoController {
             if (inquilinoRequest.getId() == inquilino.getId()) {
                 inquilino.setNome(inquilinoRequest.getNome());
                 inquilino.setSenha(inquilinoRequest.getSenha());
-                inquilinoRequest.save(inquilino);
+                inquilinoRepository.save(inquilino);
                 return opt;
             }
         }

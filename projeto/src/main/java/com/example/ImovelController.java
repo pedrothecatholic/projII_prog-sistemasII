@@ -33,27 +33,45 @@ public class ImovelController {
 
     @PostMapping
     Imovel cadastrarImovel(@RequestBody Imovel imovel) {
-        return imovelRepository.save(imovel);
+        try {
+            return imovelRepository.save(imovel);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao cadastrar imóvel ", e);
+        }
     }
+
 
     @PutMapping("/id/{id}")
     Optional<Imovel> atualizarImovel(@PathVariable Long id, @RequestBody Imovel imovelRequest) {
         Optional<Imovel> opt = this.getImovel(id);
+
         if (opt.isPresent()) {
             Imovel imovel = opt.get();
+
             if (imovelRequest.getId() == imovel.getId()) {
-                imovel.setTipo(imovelRequest.getTipo());
                 imovel.setEndereco(imovelRequest.getEndereco());
                 imovel.setAreaUtil(imovelRequest.getAreaUtil());
                 imovel.setDisponibilidade(imovelRequest.getDisponibilidade());
                 imovel.setPrecoAluguel(imovelRequest.getPrecoAluguel());
                 imovel.setQuartos(imovelRequest.getQuartos());
+    
+                if (imovel instanceof Casa && imovelRequest instanceof Casa) {
+                    Casa casa = (Casa) imovel;
+                    Casa casaRequest = (Casa) imovelRequest;
+                    casa.setQuintal(casaRequest.getQuintal());
+                    casa.setGaragem(casaRequest.getGaragem());
+                } else if (imovel instanceof Apartamento && imovelRequest instanceof Apartamento) {
+                    Apartamento apartamento = (Apartamento) imovel;
+                    Apartamento apartamentoRequest = (Apartamento) imovelRequest;
+                    apartamento.setAndar(apartamentoRequest.getAndar());
+                    apartamento.setCondominio(apartamentoRequest.getCondominio());
+                }
+    
                 imovelRepository.save(imovel);
-                return opt;
+                return opt; 
             }
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-        "Erro ao alterar dados do imóvel com id " + id);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado.");
     }
 
     @DeleteMapping("/id/{id}")

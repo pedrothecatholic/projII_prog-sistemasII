@@ -1,16 +1,29 @@
 package com.example;
 import javax.persistence.*;
 
-@Entity
-@Table(name="imoveis")
-public class Imovel {
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
+@Table(name="imoveis")
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "tipo"
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Casa.class, name = "Casa"),
+    @JsonSubTypes.Type(value = Apartamento.class, name = "Apartamento")
+})
+
+public abstract class Imovel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String endereco;
-    private String tipo; 
     private double areaUtil;
     private int quartos;
     private double precoAluguel;
@@ -19,9 +32,8 @@ public class Imovel {
   
     public Imovel() {}
 
-    public Imovel(String endereco, String tipo, double areaUtil, int quartos, double precoAluguel, boolean disponibilidade) {
+    public Imovel(String endereco, double areaUtil, int quartos, double precoAluguel, boolean disponibilidade) {
         this.endereco = endereco;
-        this.tipo = tipo;
         this.areaUtil = areaUtil;
         this.quartos = quartos;
         this.precoAluguel = precoAluguel;
@@ -39,14 +51,6 @@ public class Imovel {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public double getAreaUtil() {

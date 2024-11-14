@@ -50,9 +50,4 @@ public class Inquilino {
     public void setAlugueis(List<Aluguel> alugueis) {
         this.alugueis = alugueis;
     }
-
-    public void save(Inquilino inquilino) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
-    }
 }
